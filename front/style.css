@@ -1,0 +1,13 @@
+html
+{
+	background-color: #444;
+}
+
+.movie
+{
+	background-color: #666;
+	color: #CCC;
+
+	margin: 10px;
+	float: left;
+}
