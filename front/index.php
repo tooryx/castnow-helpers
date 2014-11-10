@@ -13,12 +13,24 @@
 
 		foreach ($result as $row)
 		{
+			$ratingNumber = (int) $row['ranking'];
+			$rating = "";
+
+			for ($i = 0; $i <= 10; $i++)
+			{
+				if ($i <= $ratingNumber)
+					$rating .= '<img height="10" src="star.png" alt="" />';
+				else
+					$rating .= '<img height="10" src="starbad.png" alt="" />';
+			}
+
 			?>
 			<div class="movie">
 				<h3>Seeders: <?php echo $row['seeders']; ?></h3>
-				<img src="<?php echo $row['picture']; ?>" />
+				<img class="affiche" src="<?php echo $row['picture']; ?>" />
 				<h4><?php echo $row['name']; ?></h4>
 				<h5><?php echo $row['year']; ?></h5>
+				<span><?php echo $rating ?></span>
 				<h6><a href="<?php echo $row['magnet']; ?>">Launch (<?php echo $row['quality']; ?>)</a></h6>
 			</div>
 			<?php

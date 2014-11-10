@@ -28,9 +28,13 @@ class Database:
 		picture = movieObject.pictureLink
 		magnet = movieObject.magnetLink
 		quality = movieObject.quality
+		visitLink = movieObject.visitLink
+		imdb = movieObject.imdb
+		rating = movieObject.ranking
+		summary = movieObject.summary
 
-		self._db.execute("INSERT INTO movie(name, seeders, year, picture, magnet, quality) \
-						  VALUES(?, ?, ?, ?, ?, ?)", (name, seeders, year, picture, magnet, quality,))
+		self._db.execute("INSERT INTO movie(name, seeders, year, picture, magnet, quality, visitLink, imdb, ranking, summary) \
+						  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name, seeders, year, picture, magnet, quality, visitLink, imdb, rating, summary,))
 		self._db_conn.commit()
 
 	def visited(self, tracker, link):

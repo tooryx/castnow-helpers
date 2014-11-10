@@ -7,6 +7,8 @@ class Movie:
 	magnetLink = ""
 	seeders = 0
 
+	visitLink = ""
+
 	imdbLink = ""
 	ranking = 0
 	quality = ""

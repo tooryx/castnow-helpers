@@ -3,16 +3,18 @@ import gzip
 import re
 
 from Movie import Movie
+from ImdbParser import ImdbParser
 from StringIO import StringIO
 from bs4 import BeautifulSoup
 
 class KickassParser:
 	def __init__(self, database):
 		self._db = database
-		self._movieListBaseUrl = "http://kickass.to"
+		self._host_base = "http://kickass.to"
 		self._numberOfPages = 20
+		self._imdbParser = ImdbParser()
 
-	def _getRequest(self, url):
+	def _getMethod(self, url):
 		request = urllib2.Request(url)
 		request.add_header('Accept-encoding', 'gzip')
 
@@ -37,8 +39,8 @@ class KickassParser:
 
 		for i in range(1, self._numberOfPages + 1, 1):
 			print "[-] Parsing page [ %i / %i ]" % (i, self._numberOfPages)
-			downloadLink = self._movieListBaseUrl + "/movies/%s/" % (i)
-			pageSrc = self._getRequest(downloadLink)
+			downloadLink = self._host_base + "/movies/%s/" % (i)
+			pageSrc = self._getMethod(downloadLink)
 			parsed = BeautifulSoup(pageSrc)
 			links = parsed.find_all("a", class_="cellMainLink")
 
@@ -47,14 +49,15 @@ class KickassParser:
 		return movie_list
 
 	def _getMovieInfo(self, linkMovieBox):
-		movieInfoPageSrc = self._getRequest(self._movieListBaseUrl + linkMovieBox)
+		movieInfoPageSrc = self._getMethod(self._host_base + linkMovieBox)
 		soup = BeautifulSoup(movieInfoPageSrc)
 		result = {}
 
 		infos = soup.find_all("div", class_="dataList")[0]
 
-		name = infos.ul.li.a.span.contents
-		result["name"] = name[0].__str__()
+		imdb = soup.select("a[href^=http://anonym.to/?http://www.imdb.com]")[0].contents[0]
+		result["imdb"] = imdb
+
 
 		seeders = soup.select('strong[itemprop="seeders"]')[0].contents[0]
 		result["seeders"] = int(seeders)
@@ -62,32 +65,30 @@ class KickassParser:
 		quality = soup.select('span[id^="quality_"]')[0].contents[0]
 		result["quality"] = quality
 
-		cover = soup.find_all("a", class_="movieCover")[0].img['src']
-		result["picture"] = cover
-
 		magnet = soup.find_all("a", class_="magnetlinkButton")[0]['href']
 		result["magnet"] = magnet
 
-		# FIXME
-		year = infos.find_all("ul")[1].find_all("li")[1].strong.nextSibling
-		year = re.search("([0-9]{4})", year)
+		# At this point, if there's no IMDB link, an exception should have been raised.
+		imdb_info = self._imdbParser.retrieveMovieInfo(imdb)
 
-		if year:
-			result["year"] = int(year.group(1))
-		else:
-			result["year"] = 0000
+		result["name"] = imdb_info["name"]
+		result["year"] = imdb_info["year"]
+		result["rating"] = imdb_info["rating"]
+		result["summary"] = imdb_info["summary"]
+		result["picture"] = imdb_info["picture"]
 
 		return result
 
-
 	def _buildMovieObj(self, movieInfo):
-		# FIXME: More fields possibly
 		movie = Movie(movieInfo["name"])
 		movie.movieYear = movieInfo["year"]
 		movie.pictureLink = movieInfo["picture"]
 		movie.magnetLink = movieInfo["magnet"]
 		movie.quality = movieInfo["quality"]
 		movie.seeders = movieInfo["seeders"]
+		movie.imdb = movieInfo["imdb"]
+		movie.ranking = movieInfo["rating"]
+		movie.summary = movieInfo["summary"]
 
 		return movie
 
@@ -104,6 +105,8 @@ class KickassParser:
 					self._db.visited("kickass", linkMovieBox)
 					movieInfo = self._getMovieInfo(linkMovieBox)
 					movieObj = self._buildMovieObj(movieInfo)
+
+					movieObj.visitLink = self._host_base + linkMovieBox
 
 					if movieObj.quality == "Unknown":
 						if "720p" in linkMovieBox:

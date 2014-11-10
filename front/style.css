@@ -15,7 +15,7 @@ html
 	position: relative;
 
 	width: 200px;
-	height: 410px;
+	height: 430px;
 
 	margin: 5px;
 	padding: 2px;
@@ -23,12 +23,13 @@ html
 	float: left;
 }
 
-.movie img
+.affiche
 {
-	max-height: 295px;
+	max-height: 300px;
 	max-width: 200px;
 
 	margin-top: 21px;
+	margin-bottom: 0px;
 }
 
 .movie h3
@@ -61,7 +62,6 @@ html
 .movie h5
 {
 	margin: 0px;
-	margin-bottom: 10px;
 
 	color: #999;
 	font-weight: normal;
@@ -82,4 +82,16 @@ html
 	background-color: #555;
 
 	color: #FF944D;
+}
+
+.movie h6 a:hover
+{
+	background-color: #333;
+	color: #FF6633;
+}
+
+.movie span
+{
+	margin: 0px;
+	padding: 0px;
 }
