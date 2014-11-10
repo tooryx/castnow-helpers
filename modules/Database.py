@@ -24,12 +24,13 @@ class Database:
 	def addMovie(self, movieObject):
 		name = movieObject.movieName
 		year = movieObject.movieYear
+		seeders = movieObject.seeders
 		picture = movieObject.pictureLink
 		magnet = movieObject.magnetLink
 		quality = movieObject.quality
 
-		self._db.execute("INSERT INTO movie(name, year, picture, magnet, quality) \
-						  VALUES(?, ?, ?, ?, ?)", (name, year, picture, magnet, quality,))
+		self._db.execute("INSERT INTO movie(name, seeders, year, picture, magnet, quality) \
+						  VALUES(?, ?, ?, ?, ?, ?)", (name, seeders, year, picture, magnet, quality,))
 		self._db_conn.commit()
 
 	def visited(self, tracker, link):

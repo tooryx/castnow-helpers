@@ -6,8 +6,50 @@ html
 .movie
 {
 	background-color: #666;
-	color: #CCC;
+	color: #BBB;
+
+	text-align: center;
+
+	font-size: 0.9em;
+
+	position: relative;
+
+	width: 200;
+	height: 400;
 
 	margin: 10px;
+	padding: 10px;
+	padding-bottom: 0px;
 	float: left;
+}
+
+.movie h4
+{
+	margin: 0px;
+	margin-top: 10px;
+}
+
+.movie h5
+{
+	margin: 0px;
+	margin-bottom: 5px;
+
+	color: #999;
+	font-weight: normal;
+}
+
+.movie h6 a
+{
+	text-decoration: none;
+
+	padding: 10px;
+
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+
+	background-color: #555;
+
+	color: #FF944D;
 }

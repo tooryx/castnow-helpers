@@ -5,6 +5,7 @@ class Movie:
 	summary = ""
 	pictureLink = ""
 	magnetLink = ""
+	seeders = 0
 
 	imdbLink = ""
 	ranking = 0
