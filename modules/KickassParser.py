@@ -15,7 +15,13 @@ class KickassParser:
 	def _getRequest(self, url):
 		request = urllib2.Request(url)
 		request.add_header('Accept-encoding', 'gzip')
-		response = urllib2.urlopen(request)
+
+		for i in range(3):
+			try:
+				response = urllib2.urlopen(request, timeout=2)
+				break
+			except:
+				continue
 
 		data = response.read()
 
@@ -30,6 +36,7 @@ class KickassParser:
 		movie_list = []
 
 		for i in range(1, self._numberOfPages + 1, 1):
+			print "[-] Parsing page [ %i / %i ]" % (i, self._numberOfPages)
 			downloadLink = self._movieListBaseUrl + "/movies/%s/" % (i)
 			pageSrc = self._getRequest(downloadLink)
 			parsed = BeautifulSoup(pageSrc)
@@ -44,12 +51,7 @@ class KickassParser:
 		soup = BeautifulSoup(movieInfoPageSrc)
 		result = {}
 
-		infos = soup.find_all("div", class_="dataList")
-
-		if not(infos):
-			return
-
-		infos = infos[0]
+		infos = soup.find_all("div", class_="dataList")[0]
 
 		name = infos.ul.li.a.span.contents
 		result["name"] = name[0].__str__()
@@ -95,22 +97,25 @@ class KickassParser:
 
 		for movie in movies:
 			linkMovieBox = movie['href']
+			print "[-] Processing: %s" % (linkMovieBox)
 
 			try:
 				if not self._db.alreadyVisited("kickass", linkMovieBox):
 					self._db.visited("kickass", linkMovieBox)
 					movieInfo = self._getMovieInfo(linkMovieBox)
-
-					if not(movieInfo):
-						continue
-
 					movieObj = self._buildMovieObj(movieInfo)
 
+					if movieObj.quality == "Unknown":
+						if "720p" in linkMovieBox:
+							movieObj.quality = "720p"
+						elif "1080p" in linkMovieBox:
+							movieObj.quality = "1080p"
+
 					if not self._db.isMovieInDB(movieObj) \
-					and movieObj.quality in [ "720p", "1080p" ]:
+					and movieObj.quality in [ "720p", "1080p", "HDRiP", "BDRip" ]:
 						self._db.addMovie(movieObj)
 						moviesObjects.append(movieObj)
-			except:
-				print "Error while processing: %s" % (linkMovieBox)
+			except Exception as e:
+				print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (linkMovieBox, e)
 
 		return moviesObjects

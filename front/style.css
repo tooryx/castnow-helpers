@@ -14,25 +14,54 @@ html
 
 	position: relative;
 
-	width: 200;
-	height: 400;
+	width: 200px;
+	height: 410px;
 
-	margin: 10px;
-	padding: 10px;
+	margin: 5px;
+	padding: 2px;
 	padding-bottom: 0px;
 	float: left;
+}
+
+.movie img
+{
+	max-height: 295px;
+	max-width: 200px;
+
+	margin-top: 21px;
+}
+
+.movie h3
+{
+	position: absolute;
+
+	font-size: 0.7em;
+	font-weight: normal;
+
+	left: 0px;
+	right: 0px;
+	top: 0px;
+
+	background-color: #333;
+	color: #94B8FF;
+
+	margin-top: 0px;
+	margin-bottom: 10px;
+	padding: 5px;
 }
 
 .movie h4
 {
 	margin: 0px;
-	margin-top: 10px;
+	margin-top: 5px;
+
+	font-size: 0.9em;
 }
 
 .movie h5
 {
 	margin: 0px;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 
 	color: #999;
 	font-weight: normal;
@@ -45,6 +74,7 @@ html
 	padding: 10px;
 
 	position: absolute;
+
 	bottom: 0px;
 	left: 0px;
 	right: 0px;

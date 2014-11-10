@@ -15,10 +15,11 @@
 		{
 			?>
 			<div class="movie">
+				<h3>Seeders: <?php echo $row['seeders']; ?></h3>
 				<img src="<?php echo $row['picture']; ?>" />
 				<h4><?php echo $row['name']; ?></h4>
 				<h5><?php echo $row['year']; ?></h5>
-				<h6><a href="<?php echo $row['magnet']; ?>">Regarder (<?php echo $row['quality']; ?>)</a></h6>
+				<h6><a href="<?php echo $row['magnet']; ?>">Launch (<?php echo $row['quality']; ?>)</a></h6>
 			</div>
 			<?php
 		}
