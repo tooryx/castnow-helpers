@@ -9,6 +9,11 @@ class Database:
 	def close(self):
 		self._db_conn.close()
 
+	def reset(self):
+		self._db.execute("DELETE FROM movie")
+		self._db.execute("DELETE FROM visited")
+		self._db_conn.commit()
+
 	def alreadyVisited(self, tracker, link):
 		res = self._db.execute("SELECT url FROM visited WHERE tracker=? AND url=?", (tracker, link,))
 		return (len(res.fetchall()) >= 1)

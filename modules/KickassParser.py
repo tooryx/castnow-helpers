@@ -115,7 +115,7 @@ class KickassParser:
 							movieObj.quality = "1080p"
 
 					if not self._db.isMovieInDB(movieObj) \
-					and movieObj.quality in [ "720p", "1080p", "HDRiP", "BDRip" ]:
+					and movieObj.quality in [ "720p", "1080p", "BDRip" ]:
 						self._db.addMovie(movieObj)
 						moviesObjects.append(movieObj)
 			except Exception as e:
