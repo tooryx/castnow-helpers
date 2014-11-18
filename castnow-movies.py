@@ -16,6 +16,7 @@ conf = { "dbpath": "db/database.sqlite" }
 database = Database(conf)
 
 if RESET_DB:
+	print "[+] Reseting db...	"
 	database.reset()
 
 ka = KickassParser(database)

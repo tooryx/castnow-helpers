@@ -98,10 +98,10 @@ class KickassParser:
 
 		for movie in movies:
 			linkMovieBox = movie['href']
-			print "[-] Processing: %s" % (linkMovieBox)
 
 			try:
 				if not self._db.alreadyVisited("kickass", linkMovieBox):
+					print "[-] Processing: %s" % (linkMovieBox)
 					self._db.visited("kickass", linkMovieBox)
 					movieInfo = self._getMovieInfo(linkMovieBox)
 					movieObj = self._buildMovieObj(movieInfo)
