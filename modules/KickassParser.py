@@ -48,8 +48,8 @@ class KickassParser:
 
 		return movie_list
 
-	def _getMovieInfo(self, linkMovieBox):
-		movieInfoPageSrc = self._getMethod(self._host_base + linkMovieBox)
+	def _getMovieInfo(self, directLink):
+		movieInfoPageSrc = self._getMethod(directLink)
 		soup = BeautifulSoup(movieInfoPageSrc)
 		result = {}
 
@@ -92,33 +92,37 @@ class KickassParser:
 
 		return movie
 
+	def _processMovieInformations(self, directLink, isSameMovie=False):
+		print "[-] Processing: %s" % (directLink)
+		self._db.visited(directLink)
+		movieInfo = self._getMovieInfo(directLink)
+		movieObj = self._buildMovieObj(movieInfo)
+
+		movieObj.visitLink = directLink
+
+		if movieObj.quality == "Unknown":
+			if "720p" in directLink:
+				movieObj.quality = "unknown-720p"
+			elif "1080p" in directLink:
+				movieObj.quality = "unkown-1080p"
+
+		if not self._db.isMovieInDB(movieObj):
+			self._db.addMovie(movieObj)
+		elif self._db.isBetterQuality(movieObj) \
+		or isSameMovie:
+			self._db.updateMovie(movieObj)
+
 	def retrieveMovieList(self):
 		movies = self._getMovieList()
-		moviesObjects = []
 
 		for movie in movies:
 			linkMovieBox = movie['href']
+			directLink = self._host_base + linkMovieBox
 
 			try:
-				if not self._db.alreadyVisited("kickass", linkMovieBox):
-					print "[-] Processing: %s" % (linkMovieBox)
-					self._db.visited("kickass", linkMovieBox)
-					movieInfo = self._getMovieInfo(linkMovieBox)
-					movieObj = self._buildMovieObj(movieInfo)
-
-					movieObj.visitLink = self._host_base + linkMovieBox
-
-					if movieObj.quality == "Unknown":
-						if "720p" in linkMovieBox:
-							movieObj.quality = "720p"
-						elif "1080p" in linkMovieBox:
-							movieObj.quality = "1080p"
-
-					if not self._db.isMovieInDB(movieObj) \
-					and movieObj.quality in [ "720p", "1080p", "BDRip" ]:
-						self._db.addMovie(movieObj)
-						moviesObjects.append(movieObj)
+				if not self._db.alreadyVisited(directLink):
+					self._processMovieInformations(directLink)
+				elif self._db.linkIsRelatedToMovie(directLink):
+					self._processMovieInformations(directLink, isSameMovie=True)
 			except Exception as e:
-				print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (linkMovieBox, e)
-
-		return moviesObjects
+				print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (directLink, e)

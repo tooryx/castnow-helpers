@@ -19,7 +19,7 @@
 
 			for ($i = 0; $i < 10; $i++)
 			{
-				if ($i <= $ratingNumber)
+				if ($i < $ratingNumber)
 					$rating .= '<img height="10" src="star.png" alt="" />';
 				else
 					$rating .= '<img height="10" src="starbad.png" alt="" />';
