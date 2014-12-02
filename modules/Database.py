@@ -38,7 +38,7 @@ class Database:
 		scores = {
 			"1080p": 10,
 			"720p": 10,
-			"unkown-720p": 9,
+			"unkown-1080p": 9,
 			"unkown-720p": 8,
 			"MPEG-4": 7,
 			"HDRiP": 6,

@@ -81,13 +81,13 @@ html
 
 	background-color: #555;
 
-	color: #FF944D;
+	color: #FFF;
 }
 
 .movie h6 a:hover
 {
-	background-color: #333;
-	color: #FF6633;
+	background-color: #333 !important;
+	color: #BBB;
 }
 
 .movie span
@@ -96,4 +96,28 @@ html
 	padding: 0px;
 
 	font-size: 0.7em;
+}
+
+/* good qualities */
+.quality-720p, .quality-1080p, .quality-unknown-720p, .quality-unknown-1080p
+{
+	background-color: #45A645 !important;
+}
+
+/* average qualities */
+.quality-mpeg-4, .quality-dvdrip, .quality-bdrip
+{
+	background-color: #FF9933 !important;
+}
+
+/* bad qualities */
+.quality-dvd, .quality-blu-ray, .quality-unknown, .quality-hdrip
+{
+	background-color: #FF6666 !important;
+}
+
+/* very bad */
+.quality-unknown, .quality-screener, .quality-telesync, .quality-cam
+{
+	background-color: #000 !important;
 }

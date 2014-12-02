@@ -34,7 +34,7 @@
 				<h4><?php echo $row['name']; ?></h4>
 				<h5><?php echo $row['year']; ?></h5>
 				<span><?php echo $rating . " (" . $ratingNumber . ")" ?></span>
-				<h6><a href="<?php echo $row['magnet']; ?>">Launch (<?php echo $row['quality']; ?>)</a></h6>
+				<h6><a class="quality-<?php echo strtolower($row['quality']); ?>" href="<?php echo $row['magnet']; ?>">Launch (<?php echo $row['quality']; ?>)</a></h6>
 			</div>
 			<?php
 		}
