@@ -8,7 +8,7 @@
 	<body>
 		<?php
 
-		$db = new PDO("sqlite:/var/www/html/castnow/db/database.sqlite");
+		$db = new PDO("sqlite:../db/database.sqlite");
 		$result = $db->query("SELECT * FROM movie ORDER BY seeders DESC");
 
 		foreach ($result as $row)
@@ -29,7 +29,7 @@
 			<div class="movie">
 				<h3>Seeders: <?php echo $row['seeders']; ?></h3>
 				<a href='<?php echo $imdb_link; ?>'>
-				  <img class="affiche" src="<?php echo $row['picture']; ?>" />
+				  <img class="affiche" src="img/<?php echo $row['picture']; ?>" />
 				</a>
 				<h4><?php echo $row['name']; ?></h4>
 				<h5><?php echo $row['year']; ?></h5>

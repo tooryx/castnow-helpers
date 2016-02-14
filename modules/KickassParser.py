@@ -11,7 +11,7 @@ class KickassParser:
 	def __init__(self, database):
 		self._db = database
 		self._host_base = "http://kickass.to"
-		self._numberOfPages = 1
+		self._numberOfPages = 20
 		self._imdbParser = ImdbParser()
 
 	def _getMethod(self, url):
@@ -68,6 +68,16 @@ class KickassParser:
 		magnet = soup.find_all("a", class_="kaGiantButton")[2]['href']
 		result["magnet"] = magnet
 
+		pic = soup.find_all("a", class_="movieCover")[0].contents[0]["src"]
+		img_file = urllib2.urlopen("http:%s" % (pic))
+
+		pic_name = pic.split("/")[-1]
+
+		with open("front/img/%s" % (pic_name), "w") as f:
+			f.write(img_file.read())
+
+		result["picture"] = pic_name
+
 		# At this point, if there's no IMDB link, an exception should have been raised.
 		imdb_info = self._imdbParser.retrieveMovieInfo(imdb)
 
@@ -75,7 +85,6 @@ class KickassParser:
 		result["year"] = imdb_info["year"]
 		result["rating"] = imdb_info["rating"]
 		result["summary"] = imdb_info["summary"]
-		result["picture"] = imdb_info["picture"]
 
 		return result
 
@@ -119,10 +128,10 @@ class KickassParser:
 			linkMovieBox = movie['href']
 			directLink = self._host_base + linkMovieBox
 
-			# try:
-			if not self._db.alreadyVisited(directLink):
-				self._processMovieInformations(directLink)
-			elif self._db.linkIsRelatedToMovie(directLink):
-				self._processMovieInformations(directLink, isSameMovie=True)
-		# except Exception as e:
-				# print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (directLink, e)
+			try:
+				if not self._db.alreadyVisited(directLink):
+					self._processMovieInformations(directLink)
+				elif self._db.linkIsRelatedToMovie(directLink):
+					self._processMovieInformations(directLink, isSameMovie=True)
+			except Exception as e:
+				print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (directLink, e)

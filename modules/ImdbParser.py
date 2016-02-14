@@ -28,6 +28,5 @@ class ImdbParser:
 		imdb_info["year"] = re.search("([0-9]{4})", imdb_info["date"]).group(1)
 		imdb_info["rating"] = float(soup.select('span[itemprop="ratingValue"]')[0].contents[0].strip())
 		imdb_info["summary"] = soup.select('div[itemprop="description"]')[0].contents[0].strip()
-		imdb_info["picture"] = soup.select('img[itemprop="image"]')[0]["src"]
 
 		return imdb_info
