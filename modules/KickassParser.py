@@ -11,7 +11,7 @@ class KickassParser:
 	def __init__(self, database):
 		self._db = database
 		self._host_base = "http://kickass.to"
-		self._numberOfPages = 20
+		self._numberOfPages = 1
 		self._imdbParser = ImdbParser()
 
 	def _getMethod(self, url):
@@ -41,7 +41,7 @@ class KickassParser:
 			print "[-] Parsing page [ %i / %i ]" % (i, self._numberOfPages)
 			downloadLink = self._host_base + "/movies/%s/" % (i)
 			pageSrc = self._getMethod(downloadLink)
-			parsed = BeautifulSoup(pageSrc)
+			parsed = BeautifulSoup(pageSrc, "lxml")
 			links = parsed.find_all("a", class_="cellMainLink")
 
 			movie_list += links
@@ -50,12 +50,12 @@ class KickassParser:
 
 	def _getMovieInfo(self, directLink):
 		movieInfoPageSrc = self._getMethod(directLink)
-		soup = BeautifulSoup(movieInfoPageSrc)
+		soup = BeautifulSoup(movieInfoPageSrc, "lxml")
 		result = {}
 
 		infos = soup.find_all("div", class_="dataList")[0]
 
-		imdb = soup.select("a[href^=http://anonym.to/?http://www.imdb.com]")[0].contents[0]
+		imdb = soup.select("a[href^=http://www.imdb.com]")[0].contents[0]
 		result["imdb"] = imdb
 
 
@@ -65,7 +65,7 @@ class KickassParser:
 		quality = soup.select('span[id^="quality_"]')[0].contents[0]
 		result["quality"] = quality
 
-		magnet = soup.find_all("a", class_="magnetlinkButton")[0]['href']
+		magnet = soup.find_all("a", class_="kaGiantButton")[2]['href']
 		result["magnet"] = magnet
 
 		# At this point, if there's no IMDB link, an exception should have been raised.
@@ -119,10 +119,10 @@ class KickassParser:
 			linkMovieBox = movie['href']
 			directLink = self._host_base + linkMovieBox
 
-			try:
-				if not self._db.alreadyVisited(directLink):
-					self._processMovieInformations(directLink)
-				elif self._db.linkIsRelatedToMovie(directLink):
-					self._processMovieInformations(directLink, isSameMovie=True)
-			except Exception as e:
-				print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (directLink, e)
+			# try:
+			if not self._db.alreadyVisited(directLink):
+				self._processMovieInformations(directLink)
+			elif self._db.linkIsRelatedToMovie(directLink):
+				self._processMovieInformations(directLink, isSameMovie=True)
+		# except Exception as e:
+				# print "[-][\033[31;01mERR\033[00m] Processing: %s (%s)" % (directLink, e)

@@ -10,8 +10,33 @@ class Database:
 		self._db_conn.close()
 
 	def reset(self):
-		self._db.execute("DELETE FROM movie")
-		self._db.execute("DELETE FROM visited")
+		try:
+			self._db.execute("DROP TABLE movie")
+			self._db.execute("DROP TABLE visited")
+		except:
+			pass
+
+		self._db.execute("""
+			CREATE TABLE `movie` (
+				`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+				`name` TEXT,
+				`seeders` INTEGER,
+				`year` INTEGER,
+				`picture` TEXT,
+				`magnet` TEXT,
+				`quality` TEXT,
+				`visitLink` TEXT,
+				`imdb` TEXT,
+				`ranking` TEXT,
+				`summary` TEXT
+			);
+		""")
+
+		self._db.execute("""
+			CREATE TABLE `visited` (
+				`url` TEXT
+			);
+		""")
 		self._db_conn.commit()
 
 	def reset_visited(self):
